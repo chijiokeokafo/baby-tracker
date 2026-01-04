@@ -81,7 +81,7 @@ export default async function Home() {
                     userId: user.id,
                     type: "FEED",
                     startTime: new Date(),
-                    metadata: JSON.stringify({ type: "BOTTLE", amount: 120 }), // Default for MVP quick log
+                    metadata: { type: "BOTTLE", amount: 120 }, // Default for MVP quick log
                   });
                 }}>
                   <Button size="lg" className="w-full h-20 text-xl bg-orange-500 hover:bg-orange-600 shadow-xl shadow-orange-200" type="submit">

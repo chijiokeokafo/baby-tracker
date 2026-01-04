@@ -1,20 +1,19 @@
-import { sql } from 'drizzle-orm';
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { pgTable, text, timestamp, jsonb } from 'drizzle-orm/pg-core';
 
-export const users = sqliteTable('users', {
+export const users = pgTable('users', {
     id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     name: text('name'),
-    createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(CURRENT_TIMESTAMP)`),
+    createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const events = sqliteTable('events', {
+export const events = pgTable('events', {
     id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     userId: text('user_id').notNull().references(() => users.id),
     type: text('type').notNull(), // 'FEED' | 'SLEEP'
-    startTime: integer('start_time', { mode: 'timestamp' }).notNull(),
-    endTime: integer('end_time', { mode: 'timestamp' }),
-    metadata: text('metadata'), // JSON string since SQLite doesn't strictly enforce JSON type, but we can parse it.
-    createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(CURRENT_TIMESTAMP)`),
+    startTime: timestamp('start_time').notNull(),
+    endTime: timestamp('end_time'),
+    metadata: jsonb('metadata'), // JSON string since SQLite doesn't strictly enforce JSON type, but we can parse it.
+    createdAt: timestamp('created_at').defaultNow(),
 });
 
 export type User = typeof users.$inferSelect;
