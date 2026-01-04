@@ -20,5 +20,13 @@ export async function logEvent(data: NewEvent) {
 export async function getUser() {
     // For MVP we just get the first user or 'default-user' equivalent
     const allUsers = await db.select().from(users).limit(1);
-    return allUsers[0];
+    if (allUsers.length > 0) {
+        return allUsers[0];
+    }
+
+    // Lazy create default user if none exists (Fixes empty DB issue on fresh deploy)
+    const newUsers = await db.insert(users).values({
+        name: 'Parent'
+    }).returning();
+    return newUsers[0];
 }
